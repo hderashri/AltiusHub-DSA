@@ -14,10 +14,13 @@ class DualHeap:
 
 
     def prune(self, heap):
-        while heap and self.delayed[heap[0][1]]:
-            self.delayed[heap[0][1]] -= 1
-            heapq.heappop(heap)
-
+        while heap:
+            val, idx = heap[0]
+            if self.delayed[(val, idx)]:
+                self.delayed[(val, idx)] -= 1
+                heapq.heappop(heap)
+            else:
+                break
 
     def balance(self):
         if self.small_size > self.large_size + 1:
@@ -40,7 +43,7 @@ class DualHeap:
 
     def erase(self, num, idx):
         self.delayed[(num, idx)] += 1
-        if num <= self.small[0][0]:
+        if num <= -self.small[0][0]:
             self.small_size -= 1
             if (num, idx) == self.small[0]:
                 self.prune(self.small)
